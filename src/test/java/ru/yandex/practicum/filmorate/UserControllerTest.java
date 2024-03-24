@@ -173,7 +173,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testUpdateUsersWithWightSpaceLogin(){
+    void testUpdateUsersWithWightSpaceLogin() {
         User user1 = new User(1, "af@mail.com", "aff", "Afina",
                 LocalDate.of(2004, 7, 9));
 
@@ -187,7 +187,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testUpdateUsersWithNullName(){
+    void testUpdateUsersWithNullName() {
         User user1 = new User(1, "af@mail.com", "aff", "Afina",
                 LocalDate.of(2004, 7, 9));
 
@@ -201,7 +201,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testUpdateUsersWithEmptyName(){
+    void testUpdateUsersWithEmptyName() {
         User user1 = new User(1, "af@mail.com", "aff", "Afina",
                 LocalDate.of(2004, 7, 9));
 
@@ -215,7 +215,7 @@ class UserControllerTest {
     }
 
     @Test
-    void testUpdateUsersWithAfterCurrentDate(){
+    void testUpdateUsersWithAfterCurrentDate() {
         User user1 = new User(1, "af@mail.com", "aff", "Afina",
                 LocalDate.of(2004, 7, 9));
 

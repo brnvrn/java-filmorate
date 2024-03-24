@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FilmControllerTest {
     private FilmController filmController;
     private final Film film1 = new Film(1, "Lola", "Comedy",
-            LocalDate.of(2003,3, 26), Duration.ofMinutes(80));
+            LocalDate.of(2003, 3, 26), Duration.ofMinutes(80));
 
     @BeforeEach
     void setUp() {
@@ -37,7 +37,7 @@ class FilmControllerTest {
 
     @Test
     void testAddNewFilWithNullName() {
-        Film film2 = new Film(1, null, "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(1, null, "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(80));
 
         filmController.addNewFilm(film2);
@@ -47,7 +47,7 @@ class FilmControllerTest {
 
     @Test
     void testAddNewFilWithEmptyName() {
-        Film film2 = new Film(1, "", "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(1, "", "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(80));
 
         filmController.addNewFilm(film2);
@@ -57,7 +57,7 @@ class FilmControllerTest {
 
     @Test
     void testAddNewFilWithNullDescription() {
-        Film film2 = new Film(1, "Lola", null, LocalDate.of(2003,3, 26),
+        Film film2 = new Film(1, "Lola", null, LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(80));
 
         filmController.addNewFilm(film2);
@@ -72,7 +72,7 @@ class FilmControllerTest {
                 " задуманного цикла об истории Западной Германии[2][3]. Посвящён Александру Клюге. Лента получила приз " +
                 "«Туфля Чаплина» за лучшую женскую роль (Барбара Зукова) на Мюнхенском кинофестивале, а также три" +
                 " премии Deutscher Filmpreis: серебряная премия за лучший фильм, золотые премии за лучшую женскую " +
-                "(Барбара Зукова) и мужскую роли (Армин Мюллер-Шталь).", LocalDate.of(2003,3, 26),
+                "(Барбара Зукова) и мужскую роли (Армин Мюллер-Шталь).", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(80));
 
         filmController.addNewFilm(film2);
@@ -82,7 +82,7 @@ class FilmControllerTest {
 
     @Test
     void testAddNewFilWithBeforeReleaseDate() {
-        Film film2 = new Film(1, "Lola", "Comedy", LocalDate.of(1894,3, 26),
+        Film film2 = new Film(1, "Lola", "Comedy", LocalDate.of(1894, 3, 26),
                 Duration.ofMinutes(80));
 
         filmController.addNewFilm(film2);
@@ -92,7 +92,7 @@ class FilmControllerTest {
 
     @Test
     void testAddNewFilWithNegativeDuration() {
-        Film film2 = new Film(1, "Lola", "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(1, "Lola", "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(-80));
 
         filmController.addNewFilm(film2);
@@ -102,7 +102,7 @@ class FilmControllerTest {
 
     @Test
     void testAddNewFilWithZeroDuration() {
-        Film film2 = new Film(1, "Lola", "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(1, "Lola", "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(0));
 
         filmController.addNewFilm(film2);
@@ -112,7 +112,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilms() {
-        Film film2 = new Film(2, "Lola", "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(2, "Lola", "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(90));
 
         filmController.addNewFilm(film1);
@@ -125,7 +125,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilmsWithNullName() {
-        Film film2 = new Film(2, null, "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(2, null, "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(90));
 
         filmController.addNewFilm(film2);
@@ -137,7 +137,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilmsWithEmptyName() {
-        Film film2 = new Film(2, "", "Comedy", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(2, "", "Comedy", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(90));
 
         filmController.addNewFilm(film2);
@@ -149,7 +149,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilmsWithNullDescription() {
-        Film film2 = new Film(2, "Lola", "", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(2, "Lola", "", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(90));
 
         filmController.addNewFilm(film2);
@@ -177,7 +177,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilmWithBeforeReleaseDate() {
-        Film film2 = new Film(2, "Lola", "Drama", LocalDate.of(1818,3, 26),
+        Film film2 = new Film(2, "Lola", "Drama", LocalDate.of(1818, 3, 26),
                 Duration.ofMinutes(90));
 
         filmController.addNewFilm(film2);
@@ -189,7 +189,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilmWithNegativeDuration() {
-        Film film2 = new Film(2, "Lola", "Drama", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(2, "Lola", "Drama", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(-1));
 
         filmController.addNewFilm(film2);
@@ -201,7 +201,7 @@ class FilmControllerTest {
 
     @Test
     void testGetAllFilmWithZeroDuration() {
-        Film film2 = new Film(2, "Lola", "Drama", LocalDate.of(2003,3, 26),
+        Film film2 = new Film(2, "Lola", "Drama", LocalDate.of(2003, 3, 26),
                 Duration.ofMinutes(0));
 
         filmController.addNewFilm(film2);
