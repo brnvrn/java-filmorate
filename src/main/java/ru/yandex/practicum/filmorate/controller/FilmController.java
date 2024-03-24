@@ -16,6 +16,7 @@ import java.util.Map;
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     protected int generatorId = 0;
+
     @PostMapping("/new/")
     public int addNewFilm(@RequestBody Film film) {
         log.info("Добавление нового фильма: {}", film);
@@ -45,6 +46,7 @@ public class FilmController {
         }
         return film;
     }
+
     private boolean isValidateFilm(Film film) throws ValidationException {
         if (film.getName() == null || film.getName().isEmpty()) {
             System.out.println("Имя не должно быть пустым");
