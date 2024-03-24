@@ -16,6 +16,7 @@ import java.util.Map;
 public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     protected int generatorId = 0;
+
     @PostMapping("/new/")
     public int addNewUser(@RequestBody User user) {
         log.info("Добавление нового пользователя: {}", user);

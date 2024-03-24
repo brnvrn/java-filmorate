@@ -34,6 +34,7 @@ class FilmControllerTest {
         assertTrue(id > 0);
         assertEquals(film1, filmController.getAllFilms().get(0));
     }
+
     @Test
     void testAddNewFilWithNullName() {
         Film film2 = new Film(1, null, "Comedy", LocalDate.of(2003,3, 26),
