@@ -11,44 +11,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/films/")
+@RequestMapping("/films")
 @Slf4j
 public class FilmController {
     private final Map<Integer, Film> films = new HashMap<>();
     protected int generatorId = 0;
 
-    @PostMapping("/new/")
-    public int addNewFilm(@RequestBody Film film) {
+    @PostMapping
+    public Film addNewFilm(@RequestBody Film film) throws ValidationException {
         log.info("Добавление нового фильма: {}", film);
+        if (films.containsKey(film.getId())) {
+            throw new ValidationException("Фильм с таким id уже существует");
+        }
         if (isValidateFilm(film)) {
             int id = ++generatorId;
             film.setId(id);
             films.put(film.getId(), film);
+        } else {
+            throw new ValidationException("Фильм не прошел валидацию");
         }
-        return film.getId();
+        return film;
     }
 
-    @GetMapping("/all/")
+    @GetMapping
     public ArrayList<Film> getAllFilms() {
         log.info("Получение всех фильмов: []");
         return new ArrayList<>(films.values());
     }
 
-    @PutMapping("/update/{id}/")
-    public Film updateFilm(@RequestBody Film film) {
+    @PutMapping
+    public Film updateFilm(@RequestBody Film film) throws ValidationException {
         log.info("Обновление фильма: {}", film);
         if (isValidateFilm(film)) {
             int id = film.getId();
             if (films.containsKey(id)) {
                 films.remove(film.getId());
                 films.put(film.getId(), film);
+            } else {
+                throw new ValidationException("Такого фильма нет");
             }
+        } else {
+            log.error("Фильм не прошел валидацию");
         }
         return film;
     }
 
     private boolean isValidateFilm(Film film) throws ValidationException {
-        if (film.getName() == null || film.getName().isEmpty()) {
+        if (film.getName() == null || film.getName().isBlank()) {
             System.out.println("Имя не должно быть пустым");
             return false;
         }
@@ -63,7 +72,7 @@ public class FilmController {
             return false;
         }
 
-        if (film.getDuration().isNegative() || film.getDuration().isZero()) {
+        if (film.getDuration() <= 0) {
             System.out.println("Длительность фильма не должна быть отрицательной или равно нулю");
             return false;
         }

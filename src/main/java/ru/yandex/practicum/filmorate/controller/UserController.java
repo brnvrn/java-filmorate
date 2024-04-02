@@ -17,56 +17,63 @@ public class UserController {
     private final Map<Integer, User> users = new HashMap<>();
     protected int generatorId = 0;
 
-    @PostMapping("/new/")
-    public int addNewUser(@RequestBody User user) {
+    @PostMapping
+    public User addNewUser(@RequestBody User user) {
         log.info("Добавление нового пользователя: {}", user);
+        if (users.containsKey(user.getId())) {
+            log.info("Пользователь с таким id уже существует");
+            throw new ValidationException("Пользователь с таким id уже существует");
+        }
         if (isValidateUser(user)) {
             int id = ++generatorId;
             user.setId(id);
             users.put(user.getId(), user);
+        } else {
+            throw new ValidationException("Пользователь не прошел валидацию");
         }
-        return user.getId();
+
+        return user;
     }
 
-    @GetMapping("/all/")
+    @GetMapping
     public ArrayList<User> getAllUsers() {
         log.info("Получение всех пользователей: []");
         return new ArrayList<>(users.values());
     }
 
-    @PutMapping("/update/{id}/")
+    @PutMapping
     public User updateUser(@RequestBody User user) {
         log.info("Обновление пользователя: {}", user);
         if (isValidateUser(user)) {
             int id = user.getId();
             if (users.containsKey(id)) {
-                users.remove(user.getId());
-                users.put(user.getId(), user);
+                users.replace(user.getId(), user);
+            } else {
+                throw new ValidationException("Такого пользователя нет");
             }
+        } else {
+            throw new ValidationException("Пользователь не прошел валидацию");
         }
         return user;
     }
 
-    private boolean isValidateUser(User user) throws ValidationException {
+
+    private boolean isValidateUser(User user) {
         if (user.getEmail() == null || !user.getEmail().contains("@")) {
-            System.out.println("Email не должен быть пустым и должен содержать символ (@)");
-            return false;
+            throw new ValidationException("Email не должен быть пустым и должен содержать символ (@)");
         }
 
         if (user.getLogin() == null || user.getLogin().contains(" ")) {
-            System.out.println("Логин не должен быть пустым и содержать пробелы");
-            return false;
+            throw new ValidationException("Логин не должен быть пустым и содержать пробелы");
         }
 
         if (user.getName() == null || user.getName().isEmpty()) {
-            System.out.println("Имя не может быть пустым");
-            return false;
+            user.setName(user.getLogin());
         }
 
         LocalDate currentDate = LocalDate.now();
         if (user.getBirthday().isAfter(currentDate)) {
-            System.out.println("Дата не должна быть в будущем");
-            return false;
+            throw new ValidationException("Дата не должна быть в будущем");
         }
 
         return true;
