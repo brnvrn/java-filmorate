@@ -14,7 +14,10 @@ import java.util.Map;
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
+    private static final LocalDate cinemaBirthday = LocalDate.of(1895, 12, 28);
+
     private final Map<Integer, Film> films = new HashMap<>();
+
     protected int generatorId = 0;
 
     @PostMapping
@@ -23,15 +26,14 @@ public class FilmController {
         if (films.containsKey(film.getId())) {
             throw new ValidationException("Фильм с таким id уже существует");
         }
-        if (isValidateFilm(film)) {
-            int id = ++generatorId;
-            film.setId(id);
-            films.put(film.getId(), film);
-        } else {
-            throw new ValidationException("Фильм не прошел валидацию");
-        }
+        validateFilm(film);
+        int id = ++generatorId;
+        film.setId(id);
+        films.put(film.getId(), film);
+
         return film;
     }
+
 
     @GetMapping
     public ArrayList<Film> getAllFilms() {
@@ -42,41 +44,33 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody Film film) throws ValidationException {
         log.info("Обновление фильма: {}", film);
-        if (isValidateFilm(film)) {
-            int id = film.getId();
-            if (films.containsKey(id)) {
-                films.remove(film.getId());
-                films.put(film.getId(), film);
-            } else {
-                throw new ValidationException("Такого фильма нет");
-            }
+        validateFilm(film);
+        int id = film.getId();
+        if (films.containsKey(id)) {
+            films.remove(film.getId());
+            films.put(film.getId(), film);
         } else {
-            log.error("Фильм не прошел валидацию");
+            throw new ValidationException("Такого фильма нет");
         }
+
         return film;
     }
 
-    private boolean isValidateFilm(Film film) throws ValidationException {
+    private void validateFilm(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
-            System.out.println("Имя не должно быть пустым");
-            return false;
+            throw new ValidationException("Имя не должно быть пустым");
         }
 
         if (film.getDescription() == null || film.getDescription().isEmpty() || film.getDescription().length() > 200) {
-            System.out.println("Описание не должно быть пустым и превышать 200 символов");
-            return false;
+            throw new ValidationException("Описание не должно быть пустым и превышать 200 символов");
         }
 
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            System.out.println("Дата не должна быть раньше даты выхода кино (28.12.1895г.)");
-            return false;
+        if (film.getReleaseDate().isBefore(cinemaBirthday)) {
+            throw new ValidationException("Дата не должна быть раньше даты выхода кино (28.12.1895г.)");
         }
 
         if (film.getDuration() <= 0) {
-            System.out.println("Длительность фильма не должна быть отрицательной или равно нулю");
-            return false;
+            throw new ValidationException("Длительность фильма не должна быть отрицательной или равно нулю");
         }
-        return true;
     }
 }
-
