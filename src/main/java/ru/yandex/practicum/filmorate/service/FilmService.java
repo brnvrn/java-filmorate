@@ -24,6 +24,22 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
+    public Film createNewFilm(Film film) {
+       return filmStorage.createNewFilm(film);
+    }
+
+    public List<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    public Film updateFilm(Film film) {
+       return filmStorage.updateFilm(film);
+    }
+
+    public Film getFilmId(long filmId) {
+        return filmStorage.getFilmId(filmId);
+    }
+
     public void setLike(long filmId, long userId) {
         if (filmStorage.getFilmId(filmId) == null) {
             throw new NotFoundException("Фильм с таким id не найден");

@@ -21,6 +21,22 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
+    public User createNewUser(User user) {
+        return userStorage.createNewUser(user);
+    }
+
+    public List<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public User getUserId(Long id) {
+        return userStorage.getUserId(id);
+    }
+
     public void addFriend(long userId, long friendId) {
         if (userStorage.getUserId(userId) == null) {
             throw new NotFoundException("Пользователь с таким id не найден.");

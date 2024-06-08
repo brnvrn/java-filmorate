@@ -17,6 +17,7 @@ import java.util.Set;
 public class Film {
     private long id;
     @NotBlank(message = "Имя не должно быть пустым")
+    @Size(max = 200, message = "Имя не должно быть длинее 200 символов")
     private String name;
 
     @NotBlank(message = "Описание не должно быть пустым")
