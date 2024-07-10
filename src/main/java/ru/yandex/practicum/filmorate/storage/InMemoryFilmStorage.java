@@ -7,10 +7,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -61,5 +59,14 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.error("Фильм с id = {} не найден", filmId);
             throw new NotFoundException("Фильм не найден");
         }
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        log.info("Получение списка популярных фильмов");
+        return getAllFilms().stream()
+                .sorted(Comparator.comparing(Film::getLikes).reversed())
+                .limit(count)
+                .collect(Collectors.toList());
     }
 }

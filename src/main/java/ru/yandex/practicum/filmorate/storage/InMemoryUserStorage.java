@@ -17,7 +17,6 @@ public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
     protected long generatorId = 0;
 
-
     @Override
     public User createNewUser(User user) {
         log.info("Добавление нового пользователя: {}", user);

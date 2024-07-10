@@ -1,19 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
+import lombok.experimental.Accessors;
+
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
-@ToString
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
+@Accessors(chain = true)
 public class Film {
     private long id;
     @NotBlank(message = "Имя не должно быть пустым")
@@ -30,7 +28,8 @@ public class Film {
     @NotNull(message = "Продолжительность не должна быть пустой")
     @Positive(message = "Дата не должна быть меньше 0")
     private int duration;
-
-    private int like;
-    private final Set<Long> usersLikes = new HashSet<>();
+    private Mpa mpa;
+    private Set<Genre> genres = new HashSet<>();
+    private Set<Long> userIdLikes = new HashSet<>();
+    private int likes = 0;
 }
