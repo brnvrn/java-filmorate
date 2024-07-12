@@ -14,7 +14,7 @@ import java.util.Set;
 @Accessors(chain = true)
 public class Film {
     private long id;
-    @NotBlank(message = "Имя не должно быть пустым")
+    @NotBlank
     @Size(max = 200, message = "Имя не должно быть длинее 200 символов")
     private String name;
 

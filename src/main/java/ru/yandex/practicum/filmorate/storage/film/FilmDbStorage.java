@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -28,6 +29,9 @@ import java.util.Set;
 public class FilmDbStorage implements FilmStorage {
 
     private final JdbcTemplate jdbcTemplate;
+
+    private final UserStorage userStorage;
+
     private static final LocalDate cinemaBirthday = LocalDate.of(1895, 12, 28);
 
     @Override
@@ -108,6 +112,50 @@ public class FilmDbStorage implements FilmStorage {
         return films;
     }
 
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        List<Film> films = jdbcTemplate.query("SELECT * FROM films ORDER by likes DESC limit ?", filmRowMapper(), count);
+        log.info("Получение списка популярных фильмов = {}", films.size());
+        return films;
+    }
+
+    @Override
+    public void setLike(long filmId, long userId) {
+        if (getFilmId(filmId) == null) {
+            throw new NotFoundException("Фильм с таким id не найден");
+        } else if (userStorage.getUserId(userId) == null) {
+            throw new NotFoundException("Пользователь с таким id не найден");
+        } else {
+            if (jdbcTemplate.update("INSERT INTO likes (film_id, user_id) VALUES (?, ?)", filmId, userId) == 0) {
+                log.info("Не получилось добавить лайк");
+            }
+            Film film = getFilmId(filmId);
+            film.getUserIdLikes().add(userId);
+            film.setLikes(film.getLikes() + 1);
+            setLikeInDb(filmId, film.getLikes());
+        }
+    }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        if (getFilmId(filmId) == null) {
+            throw new NotFoundException("Фильм с таким id не найден");
+        } else if (userStorage.getUserId(userId) == null) {
+            throw new NotFoundException("Пользователь с таким id не найден");
+        } else {
+
+            if (jdbcTemplate.update("DELETE FROM likes WHERE film_id = ? and user_id = ?", filmId, userId) == 0) {
+                log.info("Не получилось удалить лайк");
+            }
+            Film film = getFilmId(filmId);
+            film.getUserIdLikes().remove(userId);
+            if (film.getLikes() >= 1) {
+                film.setLikes(film.getLikes() - 1);
+            }
+            setLikeInDb(filmId, film.getLikes());
+        }
+    }
+
     private RowMapper<Film> filmRowMapper() {
         return ((rs, rowNum) -> {
             Film film = new Film()
@@ -132,7 +180,7 @@ public class FilmDbStorage implements FilmStorage {
                 (rs, rowNum) -> new Genre(rs.getLong("genre_id"), rs.getString("genre_name")), id));
     }
 
-    public Mpa getMpaById(Long id) {
+    private Mpa getMpaById(Long id) {
         if (id != null) {
             return jdbcTemplate.queryForObject("SELECT * FROM mpa_ratings WHERE id = ?", mpaRowMapper(), id);
         } else {
@@ -147,9 +195,10 @@ public class FilmDbStorage implements FilmStorage {
         );
     }
 
-    public List<Film> getPopularFilms(int count) {
-        List<Film> films = jdbcTemplate.query("SELECT * FROM films ORDER by likes DESC limit ?", filmRowMapper(), count);
-        log.info("Получение списка популярных фильмов = {}", films.size());
-        return films;
+    private void setLikeInDb(Long filmId, int like) {
+        if (jdbcTemplate.update("UPDATE films SET likes = ? WHERE id = ?", like, filmId) == 0) {
+            log.info("Лайк не добавился в базу данных");
+        }
+        log.info("Лайк добавлен. Фильм с id = {} количество лайков {}", filmId, like);
     }
 }

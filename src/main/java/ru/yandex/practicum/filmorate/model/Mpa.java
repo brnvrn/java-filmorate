@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class Mpa {
     @NotNull
-    private Long id;
+    private long id;
     @NotBlank(message = "Имя не должно быть пустым")
     private String name;
 }
