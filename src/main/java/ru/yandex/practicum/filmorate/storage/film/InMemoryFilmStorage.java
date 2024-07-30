@@ -1,21 +1,21 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class InMemoryFilmStorage implements FilmStorage {
     private static final LocalDate cinemaBirthday = LocalDate.of(1895, 12, 28);
+    private UserStorage userStorage;
 
     private final Map<Long, Film> films = new HashMap<>();
 
@@ -60,6 +60,43 @@ public class InMemoryFilmStorage implements FilmStorage {
         } else {
             log.error("Фильм с id = {} не найден", filmId);
             throw new NotFoundException("Фильм не найден");
+        }
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        log.info("Получение списка популярных фильмов");
+        return getAllFilms().stream()
+                .sorted(Comparator.comparing(Film::getLikes).reversed())
+                .limit(count)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void setLike(long filmId, long userId) {
+        if (getFilmId(filmId) == null) {
+            throw new NotFoundException("Фильм с таким id не найден");
+        } else if (userStorage.getUserId(userId) == null) {
+            throw new NotFoundException("Пользователь с таким id не найден");
+        } else {
+            Film filmWithLike = getFilmId(filmId);
+            filmWithLike.getUserIdLikes().add(userId);
+            filmWithLike.setLikes(filmWithLike.getLikes() + 1);
+            log.info("Фильму поставлен лайк");
+        }
+    }
+
+    @Override
+    public void deleteLike(long filmId, long userId) {
+        if (getFilmId(filmId) == null) {
+            throw new NotFoundException("Фильм с таким id не найден");
+        } else if (userStorage.getUserId(userId) == null) {
+            throw new NotFoundException("Пользователь с таким id не найден");
+        } else {
+            Film filmWithLike = getFilmId(filmId);
+            filmWithLike.getUserIdLikes().remove(userId);
+            filmWithLike.setLikes(filmWithLike.getLikes() - 1);
+            log.info("Лайк убран");
         }
     }
 }

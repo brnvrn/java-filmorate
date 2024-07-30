@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -16,6 +18,8 @@ import java.util.Set;
 @Data
 @ToString
 @AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class User {
     private long id;
     @NotBlank(message = "Электронная почта не должна быть пустой")
@@ -32,5 +36,6 @@ public class User {
     private LocalDate birthday;
 
     private final Set<Long> friends = new HashSet<>();
+    private boolean friendStatus;
 }
 
